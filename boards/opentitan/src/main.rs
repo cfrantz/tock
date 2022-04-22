@@ -36,6 +36,7 @@ use kernel::scheduler::priority::PrioritySched;
 use kernel::utilities::registers::interfaces::ReadWriteable;
 use kernel::{create_capability, debug, static_init};
 use rv32i::csr;
+use rv32i::support::nop;
 
 #[cfg(test)]
 mod tests;
@@ -349,6 +350,7 @@ unsafe fn setup() -> (
     .finalize(components::console_component_helper!());
     // Create the debugger object that handles calls to `debug!()`.
     components::debug_writer::DebugWriterComponent::new(uart_mux).finalize(());
+    debug!("Hello World");
 
     let lldb = components::lldb::LowLevelDebugComponent::new(
         board_kernel,
@@ -705,6 +707,15 @@ unsafe fn setup() -> (
         mpu::Permissions::ReadWriteOnly,
         &mut mpu_config,
     );
+    // The MMIO range
+    chip.pmp.allocate_kernel_region(
+        0x4000_0000 as *const u8,
+        0x1000_0000,
+        mpu::Permissions::ReadWriteOnly,
+        &mut mpu_config,
+    );
+
+
     // The app locations
     chip.pmp.allocate_kernel_region(
         &_sapps as *const u8,
