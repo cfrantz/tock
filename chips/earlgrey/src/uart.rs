@@ -1,6 +1,6 @@
 use kernel::utilities::StaticRef;
 pub use lowrisc::uart::Uart;
-use lowrisc::uart::UartRegisters;
+use lowrisc::registers::uart_regs::UartRegisters;
 
 use crate::chip_config::CONFIG;
 
