@@ -19,3 +19,4 @@ pub mod spi_host;
 pub mod uart;
 pub mod usbdev;
 pub mod virtual_otbn;
+pub mod registers;
