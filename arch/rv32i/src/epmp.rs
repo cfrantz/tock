@@ -78,6 +78,12 @@ impl<const MAX_AVAILABLE_REGIONS_OVER_TWO: usize> PMP<MAX_AVAILABLE_REGIONS_OVER
             // Read the current value
             let pmpcfg_og = csr::CSR.pmpconfig_get(i / 4);
 
+            if pmpcfg_og & ((1 << 7) << ((i % 4) * 8)) > 0 {
+                // The bit is locked. Mark this regions as not usable
+                locked_region_mask |= 1 << i;
+                continue;
+            }
+
             // Flip R, W, X bits
             let pmpcfg_new = pmpcfg_og ^ (3 << ((i % 4) * 8));
             csr::CSR.pmpconfig_set(i / 4, pmpcfg_new);
@@ -112,7 +118,7 @@ impl<const MAX_AVAILABLE_REGIONS_OVER_TWO: usize> PMP<MAX_AVAILABLE_REGIONS_OVER
         Self {
             last_configured_for: MapCell::empty(),
             num_regions,
-            locked_region_mask: Cell::new(locked_region_mask),
+            locked_region_mask: Cell::new(locked_region_mask | 0xC000),
         }
     }
 }
@@ -401,7 +407,10 @@ impl<const MAX_AVAILABLE_REGIONS_OVER_TWO: usize> PMPConfig<MAX_AVAILABLE_REGION
 
     /// Returns true is the specified index is either locked or corresponds to the app region
     fn is_index_locked_or_app(&self, locked_region_mask: u64, number: usize) -> bool {
-        locked_region_mask & (1 << number) > 0 || self.app_memory_region.contains(&number)
+        let number = number * 2;
+        locked_region_mask & (1 << number) > 0
+        || locked_region_mask & (1 << number+1) > 0
+        || self.app_memory_region.contains(&number)
     }
 }
 
@@ -828,6 +837,6 @@ impl<const MAX_AVAILABLE_REGIONS_OVER_TWO: usize> kernel::platform::mpu::KernelM
         // Set the Machine Mode Lockdown (mseccfg.MML) bit.
         // This is a sticky bit, meaning that once set it cannot be unset
         // until a hard reset.
-        csr::CSR.mseccfg.modify(csr::mseccfg::mseccfg::mml::SET);
+        //csr::CSR.mseccfg.modify(csr::mseccfg::mseccfg::mml::SET);
     }
 }

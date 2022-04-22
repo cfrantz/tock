@@ -24,7 +24,9 @@ SECTIONS {
      * boot ROM and Tock are out of sync with respect to the definition...
      */
     .flash_header : {
+        . = 0x37C
         LONG(_stext)
+        . = 0x400
     } > rom
 }
 
