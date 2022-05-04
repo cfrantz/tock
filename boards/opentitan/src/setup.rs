@@ -124,15 +124,15 @@ pub struct EarlGreyNexysVideo {
         'static,
         virtual_aes_ccm::VirtualAES128CCM<'static, earlgrey::aes::Aes<'static>>,
     >,
-    kv_driver: &'static capsules::kv_driver::KVSystemDriver<
-        'static,
-        capsules::tickv::TicKVStore<
-            'static,
-            capsules::virtual_flash::FlashUser<'static, lowrisc::flash_ctrl::FlashCtrl<'static>>,
-            capsules::sip_hash::SipHasher24<'static>,
-        >,
-        [u8; 8],
-    >,
+//    kv_driver: &'static capsules::kv_driver::KVSystemDriver<
+//        'static,
+//        capsules::tickv::TicKVStore<
+//            'static,
+//            capsules::virtual_flash::FlashUser<'static, lowrisc::flash_ctrl::FlashCtrl<'static>>,
+//            capsules::sip_hash::SipHasher24<'static>,
+//        >,
+//        [u8; 8],
+//    >,
     syscall_filter: &'static TbfHeaderFilterDefaultAllow,
     scheduler: &'static PrioritySched,
     scheduler_timer:
@@ -157,7 +157,7 @@ impl SyscallDriverLookup for EarlGreyNexysVideo {
             capsules::spi_controller::DRIVER_NUM => f(Some(self.spi_controller)),
             capsules::rng::DRIVER_NUM => f(Some(self.rng)),
             capsules::symmetric_encryption::aes::DRIVER_NUM => f(Some(self.aes)),
-            capsules::kv_driver::DRIVER_NUM => f(Some(self.kv_driver)),
+            //capsules::kv_driver::DRIVER_NUM => f(Some(self.kv_driver)),
             _ => f(None),
         }
     }
@@ -446,6 +446,7 @@ pub unsafe fn setup() -> (
         static _estorage: u8;
     }
 
+/*
     // Flash
     let flash_ctrl_read_buf = static_init!(
         [u8; lowrisc::flash_ctrl::PAGE_SIZE],
@@ -544,7 +545,7 @@ pub unsafe fn setup() -> (
         >,
         capsules::tickv::TicKVKeyType,
     ));
-
+*/
     // Newer FPGA builds of OpenTitan don't include the OTBN, so any accesses
     // to the OTBN hardware will hang.
     // OTBN is still connected though as it works on simulation runs
@@ -657,7 +658,7 @@ pub unsafe fn setup() -> (
             i2c_master,
             spi_controller,
             aes,
-            kv_driver,
+            //kv_driver,
             syscall_filter,
             scheduler,
             scheduler_timer,
