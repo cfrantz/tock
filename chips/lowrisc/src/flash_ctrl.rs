@@ -2,13 +2,14 @@
 
 use core::cell::Cell;
 use core::ops::{Index, IndexMut};
-use kernel::hil;
 use kernel::utilities::cells::OptionalCell;
 use kernel::utilities::cells::TakeCell;
 use kernel::utilities::registers::interfaces::{ReadWriteable, Readable, Writeable};
 use kernel::utilities::registers::{
     register_bitfields, register_structs, ReadOnly, ReadWrite, WriteOnly,
 };
+
+use kernel::hil;
 use kernel::utilities::StaticRef;
 use kernel::ErrorCode;
 
@@ -1135,6 +1136,7 @@ impl hil::flash::Flash for FlashCtrl<'_> {
                 + CONTROL::PARTITION_SEL::DATA
                 + CONTROL::START::SET,
         );
+
         Ok(())
     }
 }

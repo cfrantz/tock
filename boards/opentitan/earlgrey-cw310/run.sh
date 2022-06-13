@@ -28,12 +28,19 @@ if [[ "${VERILATOR}" == "yes" ]]; then
 		-within "$BUILD_DIR"/earlgrey-cw310-tests.bin\
 		-binary -range-pad 8 --output "$BUILD_DIR"/binary.64.vmem --vmem 64
 	${OPENTITAN_TREE}/bazel-out/k8-fastbuild/bin/hw/build.verilator_real/sim-verilator/Vchip_sim_tb \
-		--meminit=rom,${OPENTITAN_TREE}/bazel-out/k8-fastbuild-ST-2cc462681f62/bin/sw/device/lib/testing/test_rom/test_rom_sim_verilator.39.scr.vmem \
+		--meminit=rom,${OPENTITAN_TREE}/bazel-out/k8-fastbuild-ST-97f470ee3b14/bin/sw/device/lib/testing/test_rom/test_rom_sim_verilator.scr.39.vmem \
 		--meminit=flash,./"$BUILD_DIR"/binary.64.vmem \
-		--meminit=otp,${OPENTITAN_TREE}/bazel-out/k8-fastbuild/bin/hw/ip/otp_ctrl/data/img_rma.24.vmem
+		--meminit=otp,${OPENTITAN_TREE}/bazel-out/k8-fastbuild/bin/sw/device/tests/otp_ctrl_smoketest_sim_verilator.runfiles/lowrisc_opentitan/hw/ip/otp_ctrl/data/img_rma.vmem
 elif [[ "${OPENTITAN_TREE}" != "" ]]; then
 	${OBJCOPY} --update-section .apps=${APP} ${1} bundle.elf
 	${OBJCOPY} --output-target=binary bundle.elf binary
+
+	${OPENTITAN_TREE}/build-out/sw/host/rom_ext_signer \
+	rom_ext \
+	binary \
+	${OPENTITAN_TREE}/sw/device/silicon_creator/mask_rom/keys/test_key_0_rsa_3072_exp_f4.der \
+	bundle.elf \
+	binary.signed
 
 	${OPENTITAN_TREE}/bazel-bin/sw/host/opentitantool/opentitantool.runfiles/lowrisc_opentitan/sw/host/opentitantool/opentitantool --interface=cw310 bootstrap binary
 else

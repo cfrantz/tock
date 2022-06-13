@@ -19,6 +19,7 @@ MEMORY
   ram   (!rx) : ORIGIN = 0x10000650, LENGTH = 0x10000 - 0x650
 }
 
+MPU_MIN_ALIGN = 1K;
 SECTIONS {
     .manifest ORIGIN(rom):
     {
@@ -47,5 +48,5 @@ SECTIONS {
       /* size = 1024 bytes */
     } > rom
 }
-ASSERT (((_etext - _manifest) > 0), "Error: PMP and Flash protection setup assumes _etext follows _manifest");
+
 INCLUDE ../../kernel_layout.ld

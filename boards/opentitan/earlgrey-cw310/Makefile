@@ -1,5 +1,6 @@
 # Makefile for building the tock kernel for the OpenTitan platform
 
+DEFAULT_BOARD_CONFIGURATION=fpga_cw310
 TARGET=riscv32imc-unknown-none-elf
 PLATFORM=earlgrey-cw310
 FLASHID=--dev-id="0403:6010"
@@ -21,6 +22,8 @@ include ../../Makefile.common
 # Cargo `--features`. Please see `Cargo.toml` for available options.
 ifneq ($(BOARD_CONFIGURATION),)
 	CARGO_FLAGS += --features=$(BOARD_CONFIGURATION)
+else
+	CARGO_FLAGS += --features=$(DEFAULT_BOARD_CONFIGURATION)
 endif
 
 # Build test crates with the `panic = "abort"` strategy. Tests use `unwind` by

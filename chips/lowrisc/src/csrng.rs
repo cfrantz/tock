@@ -68,10 +68,10 @@ register_bitfields![u32,
         ],
         CLEN OFFSET(4) NUMBITS(4) [],
         FLAGS OFFSET(8) NUMBITS(4) [
-            INSTANTIATE_SOURCE_XOR_SEED = 0x9,
-            INSTANTIATE_ZERO_ADDITIONAL_SEED = 0x6,
+            INSTANTIATE_SOURCE_XOR_SEED = 0,
+            INSTANTIATE_ZERO_ADDITIONAL_SEED = 1,
         ],
-        GLEN OFFSET(12) NUMBITS(13) [],
+        GLEN OFFSET(12) NUMBITS(19) [],
     ],
     GENBIT_VLD [
         GENBITS_VLD OFFSET(0) NUMBITS(1) [],

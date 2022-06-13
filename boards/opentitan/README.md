@@ -21,51 +21,30 @@ Programming
 The latest supported version (commit SHA) of OpenTitan is specified in the [OPENTITAN_SUPPORTED_SHA](https://github.com/tock/tock/blob/master/boards/opentitan/earlgrey-cw310/Makefile) make variable found:
 >  boards/opentitan/earlgrey-cw310/Makefile
 
-In *general* it is recommended that users start with the commit specified by `OPENTITAN_SUPPORTED_SHA` as newer
-versions **have not been** tested.
+Tock on OpenTitan requires
+lowRISC/opentitan@217a0168ba118503c166a9587819e3811eeb0c0c or newer. In
+general it is recommended that users start with the latest OpenTitan bitstream
+and if that results in issues try the one mentioned above.
 
-> Note: when building, you can pass in `SKIP_OT_VERSION_CHECK=yes` to skip the trivial OpenTitan version check, this maybe useful when developing or testing across multiple versions of OpenTitan.
+For more information you can follow the
+[OpenTitan development flow](https://docs.opentitan.org/doc/ug/getting_started_fpga/index.html#testing-the-demo-design)
+to flash the image.
 
-Unfortunately the OpenTitan documentation is out of sync with the Tock setup.
-For instructions that match the OpenTitan version Tock supports you will need
-to read the
-[raw docs via git](https://github.com/lowRISC/opentitan/tree/d072ac505f82152678d6e04be95c72b728a347b8/doc/ug).
-
-Setup
------
-
-### Setup OpenTitan
-
-```shell
-git clone https://github.com/lowRISC/opentitan.git
-cd opentitan
-
-# Use the OpenTitan_SHA currently supported by Tock
-git checkout <OpenTitan_SHA>
-pip3 install --user -r python-requirements.txt
-```
-Make sure to follow [OpenTitan getting started instructions](https://docs.opentitan.org/doc/getting_started/) to setup required dependencies/toolchains.
-
-### **Fedora dependencies quick install**
-
-Note: the OpenTitan documentation provides an easy installation for packages for Ubuntu based distributions. This is an equivalent command to install the (mostly) same packages for Fedora users.
-
-```shell
-sudo dnf install autoconf bison make automake gcc gcc-c++ kernel-devel \
-         clang-tools-extra clang cmake curl \
-         doxygen flex g++ git golang lcov elfutils-libelf \
-         libftdi libftdi-devel ncurses-compat-libs openssl-devel \
-         systemd-devel libusb redhat-lsb-core \
-         make ninja-build perl pkgconf python3 python3-pip python3-setuptools \
-         python3-urllib3 python3-wheel srecord tree xsltproc zlib-devel xz clang-tools-extra \
-         clang11-libs clang-devel elfutils-libelf-devel
-```
+First setup the development board using the steps here:
+https://docs.opentitan.org/doc/ug/getting_started_fpga/index.html.
+You need to make sure the boot ROM is working and that your machine can
+communicate with the OpenTitan ROM. You will need to use the `PROG` USB
+port on the board for this.
 
 ChipWhisper CW310
 -----------------
 
 To use `make flash` you first need to clone the OpenTitan repo and ensure that
 the Python dependencies are installed.
+
+```shell
+python3 pip install -r python-requirements.txt
+```
 
 Then you need to build the OpenTitan tools:
 
@@ -190,6 +169,7 @@ srec_cat \
 
 And Verilator can be run with:
 
+TODO: update to reflect changes in opentitan upstream
 ```shell
 ${OPENTITAN_TREE}/bazel-out/k8-fastbuild/bin/hw/build.verilator_real/sim-verilator/Vchip_sim_tb \
     --meminit=rom,${OPENTITAN_TREE}/bazel-out/k8-fastbuild-ST-97f470ee3b14/bin/sw/device/lib/testing/test_rom/test_rom_sim_verilator.scr.39.vmem \
@@ -197,7 +177,13 @@ ${OPENTITAN_TREE}/bazel-out/k8-fastbuild/bin/hw/build.verilator_real/sim-verilat
     --meminit=otp,${OPENTITAN_TREE}/bazel-out/k8-fastbuild/bin/hw/ip/otp_ctrl/data/rma_image_verilator.vmem
 ````
 
-In both cases expect Verilator to run for **tens of minutes** before you see anything.
+You can also use the Tock Make target to automatically build Tock and run it with Verilator
+
+```shell
+make BOARD_CONFIGURATION=sim_verilator verilator
+```
+
+In both cases expect Verilator to run for tens of minutes before you see anything.
 
 Programming Apps
 ----------------
@@ -368,7 +354,7 @@ $ ./bazelisk.sh build //sw/device/tests:otbn_rsa_test
 ```
 
 ```shell
-$ elf2tab --verbose -n "otbn-rsa" --kernel-minor 0 --kernel-major 2 --disable --app-heap 0 --kernel-heap 0 --stack 0 ./bazel-out/k8-fastbuild-ST-2cc462681f62/bin/sw/otbn/crypto/rsa.elf
+$ elf2tab --verbose -n "otbn-rsa" --kernel-minor 0 --kernel-major 2 --disable --app-heap 0 --kernel-heap 0 --stack 0 ./bazel-out/k8-fastbuild-.../bin/sw/otbn/crypto/rsa.elf
 
 $ OPENTITAN_TREE=<...> APP=${OPENTITAN_TREE}/build-out/sw/otbn/rsa.tbf make test-hardware
 ```
@@ -377,7 +363,7 @@ To load the OTBN binary and run it on Verilator, use:
 ```shell
 $ elf2tab --verbose -n "otbn-rsa" --kernel-minor 0 --kernel-major 2 --disable --app-heap 0 --kernel-heap 0 --stack 0 ./bazel-out/k8-fastbuild-ST-2cc462681f62/bin/sw/otbn/crypto/rsa.elf
 
-$ APP=${OPENTITAN_TREE}/bazel-out/k8-fastbuild-ST-2cc462681f62/bin/sw/otbn/crypto/rsa.tbf make BOARD_CONFIGURATION=sim_verilator test-verilator
+$ APP=${OPENTITAN_TREE}/bazel-out/k8-fastbuild-.../bin/sw/otbn/crypto/rsa.tbf make BOARD_CONFIGURATION=sim_verilator test-verilator
 ```
 
 The output on a CW310 should look something like this:
