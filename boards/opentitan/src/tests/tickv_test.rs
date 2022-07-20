@@ -1,7 +1,7 @@
 //! Test TicKV
 
+use crate::setup::{SIPHASH, TICKV};
 use crate::tests::run_kernel_op;
-use crate::{SIPHASH, TICKV};
 use capsules_core::virtualizers::virtual_flash::FlashUser;
 use capsules_extra::test::kv_system::KVSystemTest;
 use capsules_extra::tickv::{TicKVKeyType, TicKVStore};
