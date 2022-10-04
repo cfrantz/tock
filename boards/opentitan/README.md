@@ -18,8 +18,6 @@ for more details.
 
 Programming
 -----------
-The latest supported version (commit SHA) of OpenTitan is specified in the [OPENTITAN_SUPPORTED_SHA](https://github.com/tock/tock/blob/master/boards/opentitan/earlgrey-cw310/Makefile) make variable found:
->  boards/opentitan/earlgrey-cw310/Makefile
 
 Tock on OpenTitan requires
 lowRISC/opentitan@217a0168ba118503c166a9587819e3811eeb0c0c or newer. In
@@ -262,6 +260,11 @@ QEMU can be started with Tock using the `qemu` make target:
 ```shell
 $ make qemu
 ```
+
+Where OPENTITAN_BOOT_ROM is set to point to the OpenTitan ELF file. This is
+usually located at `sw/device/boot_rom/boot_rom_fpga_nexysvideo.elf` in the
+OpenTitan build output. Note that the `make ci-setup-qemu` target will also
+download a ROM file.
 
 QEMU can be started with Tock and a userspace app with the `qemu-app` make
 target:
