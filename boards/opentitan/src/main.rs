@@ -31,9 +31,12 @@ pub unsafe fn main() {
         let main_loop_cap = create_capability!(capabilities::MainLoopCapability);
 
         board_kernel.kernel_loop(
+            // TODO should we raplece it with earlgrey
+            //earlgrey,
             earlgrey_nexysvideo,
             chip,
-            None::<&kernel::ipc::IPC<NUM_PROCS>>,
+            // TODO upstream use value 0 not NUM_PROCS
+            None::<&kernel::ipc::IPC<0>>,
             &main_loop_cap,
         );
     }

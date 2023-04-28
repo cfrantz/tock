@@ -13,7 +13,6 @@
 pub mod io;
 pub mod otbn;
 pub mod setup;
-pub mod usb;
 
 #[cfg(test)]
 pub mod tests;
