@@ -14,7 +14,7 @@ QEMU_ENTRY_POINT=0x20000400
 OPENTITAN_SUPPORTED_SHA := 565e4af39760a123c59a184aa2f5812a961fde47
 # Enable virtual function elimination
 VFUNC_ELIM=1
-
+SKIP_OT_CHECK=1
 
 include ../../Makefile.common
 
@@ -36,17 +36,19 @@ OPENTITAN_ACTUAL_SHA := $(shell cd $(OPENTITAN_TREE); git show --pretty=format:"
 # should be changed to using `RECIPEPREFIX` make syntax when CI supports
 # make version > 3.81 (macos)
 ot-check:
-ifeq ($(OPENTITAN_TREE),)
-	$(error "Please ensure that OPENTITAN_TREE is set")
-endif
-ifneq ($(OPENTITAN_ACTUAL_SHA), $(OPENTITAN_SUPPORTED_SHA))
-    ifeq ($(SKIP_OT_VERSION_CHECK), yes)
-		$(warning Skipping trivial version check)
-    else
-		$(error Please ensure to build the correct version \
-		of OpenTitan, latest supported is <$(OPENTITAN_SUPPORTED_SHA)>, \
-		you are on <$(OPENTITAN_ACTUAL_SHA)>)
-    endif
+ifneq ($(SKIP_OT_CHECK), 1)
+	ifeq ($(OPENTITAN_TREE),)
+		$(error "Please ensure that OPENTITAN_TREE is set")
+	endif
+	ifneq ($(OPENTITAN_ACTUAL_SHA), $(OPENTITAN_SUPPORTED_SHA))
+			ifeq ($(SKIP_OT_VERSION_CHECK), yes)
+			$(warning Skipping trivial version check)
+			else
+			$(error Please ensure to build the correct version \
+			of OpenTitan, latest supported is <$(OPENTITAN_SUPPORTED_SHA)>, \
+			you are on <$(OPENTITAN_ACTUAL_SHA)>)
+			endif
+	endif
 endif
 
 
