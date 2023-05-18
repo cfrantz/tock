@@ -30,6 +30,7 @@ SECTIONS {
         . += 384; /* modulus */
         . += 4;   /* address_translation */
         . += 4;   /* identifier */
+        . += 4;   /* signed region end */
         . += 4;   /* length */
         . += 4;   /* version_major */
         . += 4;   /* version_minor */
@@ -41,7 +42,7 @@ SECTIONS {
         . += 4;   /* code_end */
         LONG(_stext - ORIGIN(rom)); /* . = . + 4; entry_point */
         . += 176; /* padding */
-        /* size = 9860 bytes */
+        /* size = 9864 bytes */
     } > rom
 
     .vectors : ALIGN (256) {
