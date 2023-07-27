@@ -9,11 +9,11 @@ silicon root of trust (RoT) chips.
 
 Tock currently supports OpenTitan on the ChipWhisperer
 CW310 FPGA board. For more details on the boards see:
-https://docs.opentitan.org/doc/ug/fpga_boards/
+https://opentitan.org/book/doc/contributing/fpga/get_a_board.html
 
 You can get started with OpenTitan using either the, ChipWhisperer CW310
 board or a simulation. See the OpenTitan
-[getting started](https://docs.opentitan.org/doc/ug/getting_started/index.html)
+[getting started guide](https://opentitan.org/guides/getting_started/index.html)
 for more details.
 
 Programming
@@ -26,6 +26,9 @@ In *general* it is recommended that users start with the commit specified by `OP
 versions **have not been** tested.
 
 > Note: when building, you can pass in `SKIP_OT_VERSION_CHECK=yes` to skip the trivial OpenTitan version check, this maybe useful when developing or testing across multiple versions of OpenTitan.
+
+> **Note: The remainder of this document is out-of-date and contains errors and broken links.  We are working in fixing it.**
+-----------
 
 Unfortunately the OpenTitan documentation is out of sync with the Tock setup.
 For instructions that match the OpenTitan version Tock supports you will need
